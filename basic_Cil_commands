@@ -1,0 +1,64 @@
+
+AWS CLI - Common Commands Cheat Sheet
+======================================
+
+🛠️ General Setup
+----------------
+aws configure                     
+aws configure list               
+aws configure get region         
+
+🖥️ EC2 (Instances)
+------------------
+# Launch EC2 Instance
+aws ec2 run-instances --image-id ami-xxxxx --count 1 --instance-type t2.micro \
+--key-name MyKey --security-group-ids sg-xxxx --subnet-id subnet-xxxx \
+--tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=MyInstance}]'
+
+# List Instances
+aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,State.Name,PublicIpAddress,Tags]' --output table
+
+# Start/Stop/Terminate
+aws ec2 start-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+aws ec2 stop-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+aws ec2 terminate-instances --instance-ids i-xxxxxxxxxxxxxxxxx
+
+📦 S3 (Buckets and Files)
+-------------------------
+# Create Bucket
+aws s3 mb s3://my-bucket-name
+
+# List Buckets
+aws s3 ls
+
+# Upload/Download Files
+aws s3 cp myfile.txt s3://my-bucket-name/
+aws s3 cp s3://my-bucket-name/myfile.txt .
+
+# Sync Folder
+aws s3 sync ./local-folder s3://my-bucket-name/folder/
+
+🔐 IAM (Users & Policies)
+-------------------------
+# List IAM Users
+aws iam list-users
+
+# Create IAM User
+aws iam create-user --user-name NewUser
+
+# Attach Policy
+aws iam attach-user-policy --user-name NewUser --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+🌐 VPC & Networking
+-------------------
+# List Subnets
+aws ec2 describe-subnets --query "Subnets[*].[SubnetId,CidrBlock,AvailabilityZone]" --output table
+
+# List Security Groups
+aws ec2 describe-security-groups --query "SecurityGroups[*].[GroupId,GroupName]" --output table
+
+🏷️ Tagging Resources
+---------------------
+# Tag Instance
+aws ec2 create-tags --resources i-xxxxxxxxxxxxxxxxx --tags Key=Name,Value=NewName
+
